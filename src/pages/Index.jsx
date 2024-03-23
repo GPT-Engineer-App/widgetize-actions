@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ChakraProvider, Box, Grid, Text, Input, Button, VStack, HStack, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Select } from "@chakra-ui/react";
 import { FaPlus, FaTrash, FaGripVertical } from "react-icons/fa";
-const Widget = ({ id, title, shape, onDelete, children }) => (
+const Widget = ({ id, title, action, shape, onDelete, children }) => (
   <Box p={3} boxShadow="md" borderRadius={shape === "circle" ? "50%" : "md"} bg="white">
     <HStack justifyContent="space-between" className="drag-handle">
       <Text fontWeight="bold" cursor="move">
@@ -9,6 +9,7 @@ const Widget = ({ id, title, shape, onDelete, children }) => (
       </Text>
       <IconButton icon={<FaTrash />} size="sm" onClick={() => onDelete(id)} variant="ghost" />
     </HStack>
+    <Text mt={2}>{action}</Text>
     {children}
   </Box>
 );
@@ -16,6 +17,7 @@ const Widget = ({ id, title, shape, onDelete, children }) => (
 const Index = () => {
   const [widgets, setWidgets] = useState([]);
   const [widgetTitle, setWidgetTitle] = useState("");
+  const [widgetAction, setWidgetAction] = useState("");
   const [selectedShape, setSelectedShape] = useState("square");
   const shapes = ["circle", "square"];
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,8 +34,9 @@ const Index = () => {
       });
       return;
     }
-    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, shape: selectedShape }]);
+    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, action: widgetAction, shape: selectedShape }]);
     setWidgetTitle("");
+    setWidgetAction("");
     onClose();
   };
 
@@ -70,6 +73,7 @@ const Index = () => {
                 <option value="square">Square</option>
                 <option value="circle">Circle</option>
               </Select>
+              <Input mt={4} placeholder="Action" value={widgetAction} onChange={(e) => setWidgetAction(e.target.value)} />
             </ModalBody>
 
             <ModalFooter>
