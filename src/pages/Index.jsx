@@ -7,27 +7,12 @@ const Widget = ({ id, title, action, type, onDelete }) => {
   switch (type) {
     case "textbox":
       content = <Input mt={2} placeholder="Enter text" />;
-      actionContent = (
-        <Text fontSize="sm" mt={2}>
-          {action}
-        </Text>
-      );
       break;
     case "rectangle":
       content = <Box mt={2} w="100%" h="50px" bg="gray.200" />;
-      actionContent = (
-        <Text fontSize="sm" mt={2}>
-          {action}
-        </Text>
-      );
       break;
     case "circle":
       content = <Box mt={2} w="100px" h="100px" borderRadius="50%" bg="gray.200" mx="auto" />;
-      actionContent = (
-        <Text fontSize="sm" mt={2}>
-          {action}
-        </Text>
-      );
       break;
     default:
       content = null;
@@ -40,7 +25,6 @@ const Widget = ({ id, title, action, type, onDelete }) => {
         <IconButton icon={<FaTrash />} onClick={() => onDelete(id)} variant="ghost" />
       </HStack>
       {content}
-      {actionContent}
     </VStack>
   );
 };
