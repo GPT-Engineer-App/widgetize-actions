@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { ChakraProvider, Box, Grid, Text, Input, Button, VStack, HStack, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
 import { FaPlus, FaTrash, FaGripVertical } from "react-icons/fa";
-const Widget = ({ id, title, onDelete, children }) => (
-  <Box p={3} boxShadow="md" borderRadius="md" bg="white">
+const Widget = ({ id, title, shape, onDelete, children }) => (
+  <Box p={3} boxShadow="md" borderRadius={shape === "circle" ? "50%" : "md"} bg="white">
     <HStack justifyContent="space-between" className="drag-handle">
       <Text fontWeight="bold" cursor="move">
         {title}
@@ -16,6 +16,7 @@ const Widget = ({ id, title, onDelete, children }) => (
 const Index = () => {
   const [widgets, setWidgets] = useState([]);
   const [widgetTitle, setWidgetTitle] = useState("");
+  const shapes = ["circle", "square"];
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -30,7 +31,8 @@ const Index = () => {
       });
       return;
     }
-    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle }]);
+    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, shape: randomShape }]);
     setWidgetTitle("");
     onClose();
   };
@@ -48,7 +50,7 @@ const Index = () => {
               Add Widget
             </Button>
             {widgets.map((widget) => (
-              <Widget key={widget.id} id={widget.id} title={widget.title} onDelete={deleteWidget}>
+              <Widget key={widget.id} id={widget.id} title={widget.title} shape={widget.shape} onDelete={deleteWidget}>
                 {/* Placeholder content for the widget */}
                 <Text mt={2}>This is a widget</Text>
               </Widget>
