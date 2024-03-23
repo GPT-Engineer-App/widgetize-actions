@@ -12,7 +12,14 @@ const Widget = ({ id, title, action, type, onDelete }) => {
       content = <Box mt={2} w="100%" h="50px" bg="gray.200" />;
       break;
     case "circle":
-      content = <Box mt={2} w="100px" h="100px" borderRadius="50%" bg="gray.200" mx="auto" />;
+      content = (
+        <Box mt={2} w="100px" h="100px" mx="auto" position="relative">
+          <Button w="100%" h="100%" borderRadius="50%" bg="gray.200" />
+          <Text position="absolute" top="50%" left="50%" transform="translate(-50%, -50%)" fontWeight="bold">
+            {title}
+          </Text>
+        </Box>
+      );
       break;
     default:
       content = null;
