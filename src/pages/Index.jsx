@@ -1,25 +1,56 @@
 import React, { useState } from "react";
 import { ChakraProvider, Box, Grid, Text, Input, Button, VStack, HStack, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Select } from "@chakra-ui/react";
 import { FaPlus, FaTrash, FaGripVertical } from "react-icons/fa";
-const Widget = ({ id, title, action, shape, onDelete, children }) => (
-  <Box p={3} boxShadow="md" borderRadius={shape === "circle" ? "50%" : "md"} bg="white">
-    <HStack justifyContent="space-between" className="drag-handle">
-      <Text fontWeight="bold" cursor="move">
-        {title}
-      </Text>
-      <IconButton icon={<FaTrash />} size="sm" onClick={() => onDelete(id)} variant="ghost" />
-    </HStack>
-    <Text mt={2}>{action}</Text>
-    {children}
-  </Box>
-);
+const Widget = ({ id, title, action, type, onDelete }) => {
+  let content;
+  let actionContent;
+  switch (type) {
+    case "textbox":
+      content = <Input mt={2} placeholder="Enter text" />;
+      actionContent = (
+        <Text fontSize="sm" mt={2}>
+          {action}
+        </Text>
+      );
+      break;
+    case "rectangle":
+      content = <Box mt={2} w="100%" h="50px" bg="gray.200" />;
+      actionContent = (
+        <Text fontSize="sm" mt={2}>
+          {action}
+        </Text>
+      );
+      break;
+    case "circle":
+      content = <Box mt={2} w="100px" h="100px" borderRadius="50%" bg="gray.200" mx="auto" />;
+      actionContent = (
+        <Text fontSize="sm" mt={2}>
+          {action}
+        </Text>
+      );
+      break;
+    default:
+      content = null;
+      actionContent = null;
+  }
+  return (
+    <VStack>
+      <HStack w="100%" justify="space-between">
+        <Text fontWeight="bold">{title}</Text>
+        <IconButton icon={<FaTrash />} onClick={() => onDelete(id)} variant="ghost" />
+      </HStack>
+      {content}
+      {actionContent}
+    </VStack>
+  );
+};
 
 const Index = () => {
   const [widgets, setWidgets] = useState([]);
   const [widgetTitle, setWidgetTitle] = useState("");
   const [widgetAction, setWidgetAction] = useState("");
-  const [selectedShape, setSelectedShape] = useState("square");
-  const shapes = ["circle", "square"];
+  const [selectedType, setSelectedType] = useState("textbox");
+  const types = ["textbox", "rectangle", "circle"];
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -34,7 +65,7 @@ const Index = () => {
       });
       return;
     }
-    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, action: widgetAction, shape: selectedShape }]);
+    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, action: widgetAction, type: selectedType }]);
     setWidgetTitle("");
     setWidgetAction("");
     onClose();
@@ -53,10 +84,7 @@ const Index = () => {
               Add Widget
             </Button>
             {widgets.map((widget) => (
-              <Widget key={widget.id} id={widget.id} title={widget.title} shape={widget.shape} onDelete={deleteWidget}>
-                {/* Placeholder content for the widget */}
-                <Text mt={2}>This is a widget</Text>
-              </Widget>
+              <Widget key={widget.id} id={widget.id} title={widget.title} action={widget.action} type={widget.type} onDelete={deleteWidget} />
             ))}
           </VStack>
         </Grid>
@@ -69,8 +97,9 @@ const Index = () => {
             <ModalCloseButton />
             <ModalBody>
               <Input placeholder="Widget Title" value={widgetTitle} onChange={(e) => setWidgetTitle(e.target.value)} />
-              <Select mt={4} value={selectedShape} onChange={(e) => setSelectedShape(e.target.value)}>
-                <option value="square">Square</option>
+              <Select mt={4} value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
+                <option value="textbox">Textbox</option>
+                <option value="rectangle">Rectangle</option>
                 <option value="circle">Circle</option>
               </Select>
               <Input mt={4} placeholder="Action" value={widgetAction} onChange={(e) => setWidgetAction(e.target.value)} />
