@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChakraProvider, Box, Grid, Text, Input, Button, VStack, HStack, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast } from "@chakra-ui/react";
+import { ChakraProvider, Box, Grid, Text, Input, Button, VStack, HStack, IconButton, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useToast, Select } from "@chakra-ui/react";
 import { FaPlus, FaTrash, FaGripVertical } from "react-icons/fa";
 const Widget = ({ id, title, shape, onDelete, children }) => (
   <Box p={3} boxShadow="md" borderRadius={shape === "circle" ? "50%" : "md"} bg="white">
@@ -16,6 +16,7 @@ const Widget = ({ id, title, shape, onDelete, children }) => (
 const Index = () => {
   const [widgets, setWidgets] = useState([]);
   const [widgetTitle, setWidgetTitle] = useState("");
+  const [selectedShape, setSelectedShape] = useState("square");
   const shapes = ["circle", "square"];
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -31,8 +32,7 @@ const Index = () => {
       });
       return;
     }
-    const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, shape: randomShape }]);
+    setWidgets((prevWidgets) => [...prevWidgets, { id: Math.random(), title: widgetTitle, shape: selectedShape }]);
     setWidgetTitle("");
     onClose();
   };
@@ -66,6 +66,10 @@ const Index = () => {
             <ModalCloseButton />
             <ModalBody>
               <Input placeholder="Widget Title" value={widgetTitle} onChange={(e) => setWidgetTitle(e.target.value)} />
+              <Select mt={4} value={selectedShape} onChange={(e) => setSelectedShape(e.target.value)}>
+                <option value="square">Square</option>
+                <option value="circle">Circle</option>
+              </Select>
             </ModalBody>
 
             <ModalFooter>
